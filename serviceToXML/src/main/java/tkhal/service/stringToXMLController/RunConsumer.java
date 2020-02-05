@@ -19,7 +19,7 @@ public class RunConsumer extends Thread {
         while (true) {
             ConsumerRecords<String, String> messages = consumer.poll(Duration.ofSeconds(1));
             for (ConsumerRecord<String, String> message : messages) {
-                customer = new Customer(message.value());
+                customer = CustomerFactory.create(message.value());
                 Storage.setList(customer);
             }
         }

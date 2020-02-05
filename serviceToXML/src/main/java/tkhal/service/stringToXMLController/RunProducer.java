@@ -16,6 +16,7 @@ public class RunProducer implements Runnable{
     private final Logger LOGGER = LoggerFactory.getLogger(StringToXMLController.class);
     private String producerTopicName;
     private String xmlString;
+    private Marshaller marshaller;
 
     public RunProducer(KafkaServiceProducer kafkaServiceProducer, String producerTopicName) {
         this.kafkaServiceProducer = kafkaServiceProducer;
@@ -24,25 +25,29 @@ public class RunProducer implements Runnable{
 
     @Override
     public void run() {
+        try {
+            JAXBContext context = JAXBContext.newInstance(Customer.class);
+            marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+        } catch (JAXBException e) {
+            LOGGER.error(String.valueOf(e));
+        }
         while (true) {
             if(Storage.getList().size() > 0) {
                 LinkedList<Customer> list = Storage.getList();
-                for (Customer customer: list) {
+                for (Customer customer : list) {
+                    StringWriter sw = new StringWriter();
+                    sw.write("<root>\n");
                     try {
-                        JAXBContext context = JAXBContext.newInstance(Customer.class);
-                        Marshaller m = context.createMarshaller();
-
-                        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); // To format XML
-
-                        StringWriter sw = new StringWriter();
-                        m.marshal(customer, sw);
-                        xmlString = sw.toString();
-
+                        marshaller.marshal(customer, sw);
                     } catch (JAXBException e) {
                         LOGGER.error(String.valueOf(e));
                     }
+                    sw.write("\n</root>");
+                    xmlString = sw.toString();
                     kafkaServiceProducer.send(xmlString, producerTopicName);
-                    LOGGER.info("StringToXMLController send new xmlString record" + xmlString);
+                    LOGGER.info("StringToXMLController send new xmlString record \n" + xmlString);
                     Storage.clear(customer);
                 }
             }
