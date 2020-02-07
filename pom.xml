@@ -13,6 +13,7 @@
         <module>testStringProducer</module>
         <module>serviceToXML</module>
         <module>common</module>
+        <module>testReceiver</module>
     </modules>
 
     <properties>
