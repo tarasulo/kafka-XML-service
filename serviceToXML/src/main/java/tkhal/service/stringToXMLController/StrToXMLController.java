@@ -25,7 +25,6 @@ public class StrToXMLController {
     private static Producer<String, String> producer;
     private String consumerTopicName;
     private String producerTopicName;
-    private Customer customer;
     private Marshaller marshaller;
     private LinkedList<Customer> list;
 
