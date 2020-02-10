@@ -46,9 +46,9 @@ public class Customer {
     @XmlElement(name = "edr_peak")
     private double edrPeak;
     @XmlElement(name = "wv_encoding")
-    private int wvEncoding;
+    private double wvEncoding;
     @XmlElement(name = "wv_status")
-    private int wvStatus;
+    private double wvStatus;
     @XmlElement(name = "rmsva")
     private double rmsva;
     @XmlElement(name = "location")
@@ -133,11 +133,11 @@ public class Customer {
         this.edrPeak = edrPeak;
     }
 
-    public void setWvEncoding(int wvEncoding) {
+    public void setWvEncoding(double wvEncoding) {
         this.wvEncoding = wvEncoding;
     }
 
-    public void setWvStatus(int wvStatus) {
+    public void setWvStatus(double wvStatus) {
         this.wvStatus = wvStatus;
     }
 
@@ -229,11 +229,11 @@ public class Customer {
         return edrPeak;
     }
 
-    public int getWvEncoding() {
+    public double getWvEncoding() {
         return wvEncoding;
     }
 
-    public int getWvStatus() {
+    public double getWvStatus() {
         return wvStatus;
     }
 

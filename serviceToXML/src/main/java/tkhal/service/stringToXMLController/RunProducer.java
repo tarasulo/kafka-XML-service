@@ -13,7 +13,7 @@ import java.util.LinkedList;
 public class RunProducer implements Runnable{
 
     private KafkaServiceProducer kafkaServiceProducer;
-    private final Logger LOGGER = LoggerFactory.getLogger(StringToXMLController.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(MultyThreadController.class);
     private String producerTopicName;
     private String xmlString;
     private Marshaller marshaller;

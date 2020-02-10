@@ -18,7 +18,7 @@ import java.util.LinkedList;
 
 import static java.lang.System.getenv;
 
-public class TestController {
+public class StrToXMLController {
     private KafkaServiceConsumer kafkaServiceConsumer;
     private KafkaServiceProducer kafkaServiceProducer;
     private static KafkaConsumer<String, String> consumer;
@@ -27,21 +27,22 @@ public class TestController {
     private String producerTopicName;
     private Customer customer;
     private Marshaller marshaller;
+    private LinkedList<Customer> list;
 
-    private final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(StrToXMLController.class);
     private String xmlString;
 
-    private TestController() {
+    private StrToXMLController() {
         this.kafkaServiceConsumer = new KafkaServiceConsumer();
         this.kafkaServiceProducer = new KafkaServiceProducer();
     }
 
     public static void main(String[] args) {
-        TestController testController = new TestController();
-        testController.run();
+        StrToXMLController strToXMLController = new StrToXMLController();
+        strToXMLController.run();
     }
 
-    private void run() {
+    public void run() {
         consumerTopicName = getenv("CONSUMER_TOPIC");
         producerTopicName = getenv("PRODUCER_TOPIC");
         consumer = kafkaServiceConsumer.startConsumer(consumerTopicName);
@@ -58,12 +59,8 @@ public class TestController {
         while (true) {
             ConsumerRecords<String, String> messages = consumer.poll(Duration.ofSeconds(1));
             for (ConsumerRecord<String, String> message : messages) {
-                customer = CustomerFactory.create(message.value());
-                Storage.setList(customer);
-            }
-            if (Storage.getList().size() > 0) {
-                LinkedList<Customer> list = Storage.getList();
-                for (Customer customer : list) {
+                list = CustomerFactory.create(message.value());
+                for (Customer customer: list){
                     StringWriter sw = new StringWriter();
                     sw.write("<root>\n");
                     try {
@@ -75,7 +72,6 @@ public class TestController {
                     xmlString = sw.toString();
                     kafkaServiceProducer.send(xmlString, producerTopicName);
                     LOGGER.info("StringToXMLController send new xmlString record" + xmlString);
-                    Storage.clear(customer);
                 }
             }
         }

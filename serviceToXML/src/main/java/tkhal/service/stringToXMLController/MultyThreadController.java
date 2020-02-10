@@ -7,7 +7,7 @@ import tkhal.service.KafkaServiceProducer;
 
 import static java.lang.System.getenv;
 
-public class StringToXMLController {
+public class MultyThreadController {
         private KafkaServiceConsumer kafkaServiceConsumer;
         private KafkaServiceProducer kafkaServiceProducer;
         private static KafkaConsumer<String, String> consumer;
@@ -15,14 +15,14 @@ public class StringToXMLController {
         private String consumerTopicName;
         private String producerTopicName;
 
-        private StringToXMLController() {
+        private MultyThreadController() {
                 this.kafkaServiceConsumer = new KafkaServiceConsumer();
                 this.kafkaServiceProducer = new KafkaServiceProducer();
         }
 
         public static void main(String[] args) {
-                StringToXMLController stringToXMLController = new StringToXMLController();
-                stringToXMLController.run();
+                MultyThreadController multyThreadController = new MultyThreadController();
+                multyThreadController.run();
         }
 
         private void run() {
