@@ -58,19 +58,22 @@ public class StrToXMLController {
         while (true) {
             ConsumerRecords<String, String> messages = consumer.poll(Duration.ofSeconds(1));
             for (ConsumerRecord<String, String> message : messages) {
+                StringWriter sw = new StringWriter();
+                sw.write("<root>\n");
                 list = CustomerFactory.create(message.value());
-                for (Customer customer: list){
-                    StringWriter sw = new StringWriter();
-                    sw.write("<root>\n");
+                for (Customer customer : list) {
                     try {
                         marshaller.marshal(customer, sw);
+                        sw.write("\n");
                     } catch (JAXBException e) {
                         LOGGER.error(String.valueOf(e));
                     }
-                    sw.write("\n</root>");
+                }
+                if (sw.getBuffer().length() > 7) {
+                    sw.write("</root>");
                     xmlString = sw.toString();
                     kafkaServiceProducer.send(xmlString, producerTopicName);
-                    LOGGER.info("StringToXMLController send new xmlString record" + xmlString);
+                    LOGGER.info("StringToXMLController send new xmlString record \n" + xmlString);
                 }
             }
         }
