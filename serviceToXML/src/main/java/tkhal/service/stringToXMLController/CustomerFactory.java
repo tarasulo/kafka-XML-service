@@ -1,5 +1,6 @@
 package tkhal.service.stringToXMLController;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,10 @@ public class CustomerFactory {
                 record += "?";
             }
             String[] value = record.split(",");
+            if (value[18].equals("\"")) {
+                value[17] += ",\"";
+                value = ArrayUtils.removeElement(value, value[18]);
+            }
             if (value.length < 23) {
                 LOGGER.error("Invalid message \n" + Arrays.toString(value));
             } else {
